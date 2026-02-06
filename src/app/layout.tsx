@@ -1,8 +1,11 @@
 import type { Metadata } from "next";
+import Script from "next/script";
 import { Noto_Sans_Thai } from "next/font/google";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import "./globals.css";
+
+const GA_ID = process.env.NEXT_PUBLIC_GA_ID;
 
 const notoThai = Noto_Sans_Thai({
   variable: "--font-noto-thai",
@@ -62,7 +65,40 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="th">
+      <head>
+        {/* JSON-LD Structured Data */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "WebSite",
+              name: "NovelPromo",
+              description:
+                "อ่านนิยายออนไลน์ Dark Romance, นิยายรัก NC สุดเข้มข้น",
+              url: "https://novel-promo-site.vercel.app",
+              inLanguage: "th",
+              publisher: {
+                "@type": "Organization",
+                name: "NovelPromo",
+              },
+            }),
+          }}
+        />
+      </head>
       <body className={`${notoThai.variable} font-sans antialiased`}>
+        {/* Google Analytics */}
+        {GA_ID && (
+          <>
+            <Script
+              src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`}
+              strategy="afterInteractive"
+            />
+            <Script id="google-analytics" strategy="afterInteractive">
+              {`window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','${GA_ID}');`}
+            </Script>
+          </>
+        )}
         <Header />
         <main className="min-h-screen pt-16">{children}</main>
         <Footer />

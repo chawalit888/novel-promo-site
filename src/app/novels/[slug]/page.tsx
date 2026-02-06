@@ -37,8 +37,26 @@ export default async function NovelDetailPage({ params }: Props) {
 
   const chapters = getChaptersForNovel(slug);
 
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Book",
+    name: novel.title,
+    alternateName: novel.titleEn,
+    description: novel.logline,
+    genre: novel.genre,
+    inLanguage: "th",
+    author: { "@type": "Person", name: novel.author },
+    numberOfPages: novel.totalChapters,
+    contentRating: novel.rating,
+    keywords: novel.tags.join(", "),
+  };
+
   return (
     <article>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       {/* Hero */}
       <section className="bg-gradient-to-b from-amber-950/20 to-zinc-950 py-20 px-4">
         <div className="max-w-4xl mx-auto">
