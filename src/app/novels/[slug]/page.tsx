@@ -57,52 +57,87 @@ export default async function NovelDetailPage({ params }: Props) {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-      {/* Hero */}
-      <section className="bg-gradient-to-b from-amber-950/20 to-zinc-950 py-20 px-4">
-        <div className="max-w-4xl mx-auto">
-          <div className="flex items-center gap-2 mb-4">
-            <span className="bg-red-600/90 text-white text-xs font-bold px-2 py-1 rounded">
+
+      {/* Hero Section */}
+      <section className="relative min-h-[70vh] flex items-end overflow-hidden">
+        {/* Background */}
+        <div className="absolute inset-0 bg-novel-pattern" />
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[400px] bg-rose-600/8 rounded-full blur-[120px]" />
+        <div className="absolute bottom-0 right-0 w-[300px] h-[300px] bg-purple-600/5 rounded-full blur-[80px]" />
+
+        {/* Gradient overlay at bottom */}
+        <div className="absolute bottom-0 left-0 right-0 h-1/2 bg-gradient-to-t from-[#0a0a14] via-[#0a0a14]/80 to-transparent" />
+
+        <div className="relative z-10 max-w-5xl mx-auto px-4 pb-12 pt-32 w-full">
+          {/* Breadcrumb */}
+          <nav className="flex items-center gap-2 text-sm text-white/30 mb-8">
+            <Link href="/" className="hover:text-white/50 transition-colors">หน้าแรก</Link>
+            <span>/</span>
+            <span className="text-white/50">{novel.title}</span>
+          </nav>
+
+          {/* Tags row */}
+          <div className="flex items-center gap-2 mb-6 flex-wrap">
+            <span className="px-3 py-1 rounded-full bg-rose-500/20 text-rose-300 text-xs font-bold border border-rose-500/20">
               {novel.rating}
             </span>
             {novel.genre.map((g) => (
               <span
                 key={g}
-                className="bg-zinc-800 text-amber-300 text-xs px-2.5 py-1 rounded"
+                className="px-3 py-1 rounded-full bg-white/5 text-white/50 text-xs border border-white/5"
               >
                 {g}
               </span>
             ))}
-            <span className="bg-zinc-800 text-zinc-400 text-xs px-2.5 py-1 rounded">
+            <span className="px-3 py-1 rounded-full bg-purple-500/10 text-purple-300/60 text-xs border border-purple-500/10">
               {novel.status}
             </span>
           </div>
 
-          <h1 className="text-4xl md:text-5xl font-bold text-amber-50 mb-2">
+          {/* Title */}
+          <h1 className="text-4xl md:text-6xl font-bold text-white mb-3 leading-tight">
             {novel.title}
           </h1>
-          <p className="text-xl text-amber-200/60 mb-1">{novel.titleEn}</p>
-          <p className="text-amber-500 mb-6">{novel.subtitle}</p>
+          <p className="text-xl text-white/30 mb-2">{novel.titleEn}</p>
+          {novel.subtitle && (
+            <p className="text-rose-400/70 text-lg mb-8">{novel.subtitle}</p>
+          )}
 
-          <blockquote className="border-l-4 border-amber-600 pl-4 text-zinc-300 italic text-lg mb-8 leading-relaxed">
-            {novel.logline}
+          {/* Logline */}
+          <blockquote className="relative pl-6 mb-10 max-w-3xl">
+            <div className="absolute left-0 top-0 bottom-0 w-0.5 bg-gradient-to-b from-rose-500 to-purple-500 rounded-full" />
+            <p className="text-white/60 text-lg italic leading-relaxed">
+              {novel.logline}
+            </p>
           </blockquote>
 
-          <div className="flex items-center gap-6 text-sm text-zinc-400">
-            <span>{novel.totalChapters} ตอน</span>
-            <span>{novel.freeChapters} ตอนฟรี</span>
-            <span>ความเข้มข้น {novel.intensity}/10</span>
-            <span>
-              เผยแพร่บน{" "}
-              <strong className="text-amber-400">{novel.platform}</strong>
-            </span>
+          {/* Meta info */}
+          <div className="flex items-center gap-6 flex-wrap">
+            <InfoBadge
+              icon={<BookIcon />}
+              label={`${novel.totalChapters} ตอน`}
+            />
+            <InfoBadge
+              icon={<StarIcon />}
+              label={`${novel.freeChapters} ตอนฟรี`}
+            />
+            <InfoBadge
+              icon={<FireIcon />}
+              label={`ความเข้มข้น ${novel.intensity}/10`}
+            />
+            <InfoBadge
+              icon={<GlobeIcon />}
+              label={novel.platform}
+              highlight
+            />
           </div>
         </div>
       </section>
 
       {/* Synopsis */}
-      <section className="max-w-4xl mx-auto px-4 py-12">
-        <h2 className="text-2xl font-bold text-amber-100 mb-6">เรื่องย่อ</h2>
-        <div className="text-zinc-300 leading-relaxed space-y-4">
+      <section className="max-w-5xl mx-auto px-4 py-16">
+        <SectionTitle>เรื่องย่อ</SectionTitle>
+        <div className="text-white/55 leading-loose space-y-4 max-w-3xl">
           {novel.synopsis.split("\n\n").map((paragraph, i) => (
             <p key={i}>{paragraph}</p>
           ))}
@@ -110,75 +145,87 @@ export default async function NovelDetailPage({ params }: Props) {
       </section>
 
       {/* Characters */}
-      <section className="bg-zinc-900/50 py-12 px-4">
-        <div className="max-w-4xl mx-auto">
-          <h2 className="text-2xl font-bold text-amber-100 mb-8">
-            ตัวละครหลัก
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <section className="relative py-16 px-4">
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-purple-950/5 to-transparent" />
+        <div className="relative max-w-5xl mx-auto">
+          <SectionTitle>ตัวละครหลัก</SectionTitle>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
             {novel.characters.map((char) => (
               <div
                 key={char.name}
-                className="bg-zinc-900 border border-zinc-800 rounded-xl p-6"
+                className="group glass rounded-2xl p-6 hover:border-rose-500/10 transition-all duration-300"
               >
-                <div className="flex items-center gap-3 mb-3">
-                  <span className="bg-amber-600/20 text-amber-400 text-xs font-semibold px-2 py-1 rounded">
+                <div className="flex items-center gap-3 mb-4">
+                  <span className="px-3 py-1 rounded-full bg-rose-500/10 text-rose-400 text-xs font-semibold">
                     {char.role}
                   </span>
-                  <span className="text-zinc-500 text-sm">{char.age} ปี</span>
+                  <span className="text-white/25 text-sm">{char.age} ปี</span>
                 </div>
-                <h3 className="text-amber-100 font-bold text-lg mb-2">
+                <h3 className="text-white font-bold text-lg mb-2 group-hover:text-rose-300 transition-colors">
                   {char.name}
                 </h3>
-                <p className="text-zinc-400 text-sm leading-relaxed mb-4">
+                <p className="text-white/40 text-sm leading-relaxed mb-4">
                   {char.description}
                 </p>
-                <blockquote className="border-l-2 border-amber-700 pl-3 text-amber-200/70 italic text-sm">
-                  &ldquo;{char.quote}&rdquo;
-                </blockquote>
+                <div className="relative pl-4">
+                  <div className="absolute left-0 top-0 bottom-0 w-0.5 bg-gradient-to-b from-rose-500/40 to-purple-500/20 rounded-full" />
+                  <p className="text-white/50 italic text-sm">
+                    &ldquo;{char.quote}&rdquo;
+                  </p>
+                </div>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Hooks */}
-      <section className="max-w-4xl mx-auto px-4 py-12">
-        <h2 className="text-2xl font-bold text-amber-100 mb-6">
-          จุดเด่นของเรื่อง
-        </h2>
-        <ul className="space-y-4">
+      {/* Hooks / Highlights */}
+      <section className="max-w-5xl mx-auto px-4 py-16">
+        <SectionTitle>จุดเด่นของเรื่อง</SectionTitle>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-3xl">
           {novel.hooks.map((hook, i) => (
-            <li key={i} className="flex items-start gap-3">
-              <span className="text-amber-500 mt-1 shrink-0">&#10022;</span>
-              <p className="text-zinc-300 leading-relaxed">{hook}</p>
-            </li>
+            <div
+              key={i}
+              className="flex items-start gap-3 p-4 rounded-xl bg-white/[0.02] border border-white/5 hover:border-rose-500/10 transition-colors"
+            >
+              <div className="mt-0.5 w-6 h-6 rounded-full bg-gradient-to-br from-rose-500/20 to-purple-500/20 flex items-center justify-center shrink-0">
+                <span className="text-rose-400 text-xs">{i + 1}</span>
+              </div>
+              <p className="text-white/55 text-sm leading-relaxed">{hook}</p>
+            </div>
           ))}
-        </ul>
+        </div>
       </section>
 
       {/* Free Chapters */}
       {chapters.length > 0 && (
-        <section className="bg-zinc-900/50 py-12 px-4">
-          <div className="max-w-4xl mx-auto">
-            <h2 className="text-2xl font-bold text-amber-100 mb-6">
-              อ่านตัวอย่างฟรี
-            </h2>
-            <div className="space-y-3">
+        <section className="relative py-16 px-4">
+          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-rose-950/5 to-transparent" />
+          <div className="relative max-w-5xl mx-auto">
+            <SectionTitle>อ่านตัวอย่างฟรี</SectionTitle>
+            <div className="space-y-3 max-w-2xl">
               {chapters
                 .filter((ch) => ch.isFree)
                 .map((ch) => (
                   <Link
                     key={ch.slug}
                     href={`/chapters/${novel.slug}/${ch.slug}`}
-                    className="block bg-zinc-900 border border-zinc-800 rounded-lg p-4 hover:border-amber-700/50 transition-colors"
+                    className="group flex items-center justify-between p-4 rounded-xl glass hover:border-rose-500/20 transition-all"
                   >
-                    <div className="flex items-center justify-between">
-                      <span className="text-amber-100">{ch.title}</span>
-                      <span className="text-amber-500 text-sm">
-                        อ่านฟรี &rarr;
+                    <div className="flex items-center gap-3">
+                      <div className="w-8 h-8 rounded-lg bg-rose-500/10 flex items-center justify-center">
+                        <BookIcon />
+                      </div>
+                      <span className="text-white/80 group-hover:text-rose-300 transition-colors">
+                        {ch.title}
                       </span>
                     </div>
+                    <span className="text-rose-400/60 text-sm group-hover:text-rose-400 transition-colors flex items-center gap-1">
+                      อ่านฟรี
+                      <svg className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                      </svg>
+                    </span>
                   </Link>
                 ))}
             </div>
@@ -187,36 +234,44 @@ export default async function NovelDetailPage({ params }: Props) {
       )}
 
       {/* CTA */}
-      <section className="max-w-4xl mx-auto px-4 py-16 text-center">
-        <h2 className="text-2xl font-bold text-amber-100 mb-4">
-          อ่านเรื่องเต็มได้ที่
-        </h2>
-        <p className="text-zinc-400 mb-6">
-          ติดตามอ่าน {novel.title} ได้บน {novel.platform}
-        </p>
-        {novel.platformUrl ? (
-          <a
-            href={novel.platformUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-block bg-amber-600 hover:bg-amber-500 text-zinc-950 font-semibold px-8 py-3 rounded-lg transition-colors"
-          >
-            อ่านบน {novel.platform}
-          </a>
-        ) : (
-          <p className="text-zinc-500 text-sm">
-            (ลิงก์จะเพิ่มเมื่อเผยแพร่แล้ว)
+      <section className="relative max-w-5xl mx-auto px-4 py-20">
+        <div className="relative text-center glass rounded-3xl p-10 md:p-16 overflow-hidden">
+          {/* Background glow */}
+          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[300px] h-[200px] bg-rose-600/10 rounded-full blur-[80px]" />
+
+          <h2 className="relative text-3xl font-bold text-white mb-3">
+            อ่านเรื่องเต็มได้ที่
+          </h2>
+          <p className="relative text-white/40 mb-8">
+            ติดตามอ่าน {novel.title} ได้บน {novel.platform}
           </p>
-        )}
+          {novel.platformUrl ? (
+            <a
+              href={novel.platformUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="relative inline-flex items-center gap-2 px-8 py-3.5 rounded-full bg-gradient-to-r from-rose-600 to-purple-600 text-white font-semibold shadow-xl shadow-rose-500/20 hover:shadow-rose-500/30 transition-all hover:scale-105"
+            >
+              อ่านบน {novel.platform}
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+              </svg>
+            </a>
+          ) : (
+            <p className="relative text-white/30 text-sm">
+              (ลิงก์จะเพิ่มเมื่อเผยแพร่แล้ว)
+            </p>
+          )}
+        </div>
       </section>
 
       {/* Tags for SEO */}
-      <section className="max-w-4xl mx-auto px-4 pb-12">
+      <section className="max-w-5xl mx-auto px-4 pb-16">
         <div className="flex flex-wrap gap-2">
           {novel.tags.map((tag) => (
             <span
               key={tag}
-              className="bg-zinc-900 text-zinc-500 text-xs px-3 py-1 rounded-full border border-zinc-800"
+              className="px-3 py-1 rounded-full text-xs bg-white/[0.03] text-white/25 border border-white/5"
             >
               #{tag}
             </span>
@@ -224,5 +279,55 @@ export default async function NovelDetailPage({ params }: Props) {
         </div>
       </section>
     </article>
+  );
+}
+
+function SectionTitle({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="flex items-center gap-3 mb-8">
+      <div className="w-1 h-6 bg-gradient-to-b from-rose-500 to-purple-500 rounded-full" />
+      <h2 className="text-2xl font-bold text-white">{children}</h2>
+    </div>
+  );
+}
+
+function InfoBadge({ icon, label, highlight }: { icon: React.ReactNode; label: string; highlight?: boolean }) {
+  return (
+    <div className="flex items-center gap-2 text-sm">
+      <span className={highlight ? "text-rose-400" : "text-white/30"}>{icon}</span>
+      <span className={highlight ? "text-rose-400 font-medium" : "text-white/40"}>{label}</span>
+    </div>
+  );
+}
+
+function BookIcon() {
+  return (
+    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+    </svg>
+  );
+}
+
+function StarIcon() {
+  return (
+    <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+    </svg>
+  );
+}
+
+function FireIcon() {
+  return (
+    <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+      <path fillRule="evenodd" d="M12.395 2.553a1 1 0 00-1.45-.385c-.345.23-.614.558-.822.88-.214.33-.403.713-.57 1.116-.334.804-.614 1.768-.84 2.734a31.365 31.365 0 00-.613 3.58 2.64 2.64 0 01-.945-1.067c-.328-.68-.398-1.534-.398-2.654A1 1 0 005.05 6.05 6.981 6.981 0 003 11a7 7 0 1011.95-4.95c-.592-.591-.98-.985-1.348-1.467-.363-.476-.724-1.063-1.207-2.03zM12.12 15.12A3 3 0 017 13s.879.5 2.5.5c0-1 .5-4 1.25-4.5.5 1 .786 1.293 1.371 1.879A2.99 2.99 0 0113 13a2.99 2.99 0 01-.879 2.121z" clipRule="evenodd" />
+    </svg>
+  );
+}
+
+function GlobeIcon() {
+  return (
+    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" />
+    </svg>
   );
 }
